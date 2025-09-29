@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Linha do Tempo - Etec Philadelpho Gouvêa Netto</title>
+  <style>
+    :root{
+      --bg:#E6E6E6;
+      --card:#F8F8F8;
+      --accent:#ff0000;
+      --muted:#005C6D;
+      --dark:#004854;
+      --glass: rgba(255,255,255,0.8);
+      font-family: Verdana, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background: linear-gradient(180deg, var(--bg), #666666);
+      color:var(--dark);
+      -webkit-font-smoothing:antialiased;
+      line-height:1.45;
+    }
+    header{
+      background:linear-gradient(90deg,var(--accent),#7E0000);
+      color:#ff0000;
+      padding:28px 20px;
+      display:flex;
+      align-items:center;
+      gap:20px;
+    }
+    header .brand{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    header h1{margin:0;font-size:20px;letter-spacing:0.2px}
+    header p{margin:0;font-size:13px;opacity:0.95}
+    main{max-width:1100px;margin:28px auto;padding:0 18px}
+    .intro{
+      display:flex;
+      gap:20px;
+      align-items:center;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+    .intro .hero{
+      background:var(--card);
+      padding:14px;
+      border-radius:10px;
+      box-shadow:0 6px 18px rgba(8,50,59,0.06);
+      flex:1 1 360px;
+    }
+    .intro .meta{
+      min-width:240px;
+      background:var(--glass);
+      padding:14px;
+      border-radius:10px;
+      backdrop-filter: blur(6px);
+    }
+    h2{margin:8px 0 12px 0;color:var(--dark)}
+    .muted{color:var(--muted);font-size:14px}
+    .timeline{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+    .event{
+      background:var(--card);
+      padding:14px;
+      border-radius:10px;
+      box-shadow:0 6px 16px rgba(8,50,59,0.06);
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    }
+    .event .year{
+      font-weight:700;
+      color:var(--accent);
+      min-width:110px;
+      font-size:18px;
+    }
+    .event .body{flex:1}
+    .courses-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;
+      margin-top:12px;
+    }
+    .card{
+      background:linear-gradient(180deg,#ffffff,#fbffff);
+      padding:12px;
+      border-radius:8px;
+      border:1px solid rgba(0,0,0,0.04);
+    }
+    .gallery{
+      display:grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;
+      margin-top:12px;
+    }
+    figure{margin:0;background:var(--card);padding:8px;border-radius:8px;overflow:hidden}
+    figure img{width:100%;display:block;height:160px;object-fit:cover;border-radius:6px}
+    figcaption{font-size:13px;color:var(--muted);padding-top:8px}
+    nav.tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin:14px 0;
+    }
+    nav.tabs button{
+      background:#fff;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);
+      cursor:pointer;color:var(--dark);font-weight:600;
+    }
+    nav.tabs button.active{background:var(--accent);color:#fff;border-color:transparent}
+    .section{display:none}
+    .section.active{display:block}
+    footer{margin:40px 0 60px 0;color:var(--muted);text-align:center;font-size:14px}
+    /* slideshow styles */
+    .slideshow {
+      position:relative;
+      width:100%;
+      max-width:1100px;
+      margin:0 auto 18px auto;
+      border-radius:10px;
+      overflow:hidden;
+      background:linear-gradient(180deg,#ffffff,#f4f4f4);
+      box-shadow:0 8px 24px rgba(0,0,0,0.08);
+      display:block;
+    }
+    .slides {
+      display:flex;
+      transition:transform 0.6s ease;
+      width:100%;
+      will-change:transform;
+    }
+    .slide {
+      min-width:100%;
+      box-sizing:border-box;
+      display:block;
+    }
+    .slide img{
+      width:100%;
+      max-height:360px;
+      height:auto;
+      object-fit:contain;
+      display:block;
+      background:#fff;
+    }
+    .slideshow .controls{
+      position:absolute;
+      top:50%;
+      left:0;
+      right:0;
+      display:flex;
+      justify-content:space-between;
+      transform:translateY(-50%);
+      padding:0 12px;
+      pointer-events:none;
+    }
+    .slideshow button.control-btn{
+      background:rgba(0,0,0,0.45);
+      color:#fff;
+      border:none;
+      padding:8px 10px;
+      border-radius:6px;
+      cursor:pointer;
+      pointer-events:auto;
+    }
+    .slideshow .indicators{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:10px;
+      display:flex;
+      gap:6px;
+      pointer-events:auto;
+    }
+    .slideshow .indicators button{
+      width:10px;height:10px;border-radius:50%;border:none;background:rgba(255,255,255,0.6);cursor:pointer;
+    }
+    .slideshow .indicators button.active{background:var(--accent)}
+    /* responsive tweaks */
+    @media (max-width:680px){
+      header{padding:18px}
+      .intro{flex-direction:column}
+      figure img{height:140px}
+      .slide img{height:200px}
+    }
+  </style>
+</head>
+<body>
+ <header id="cps-header">
+            <div class="cps-header__container">
+                <div class="cps-header__logo">
+                    <a href="images/logo-etec.png" rel="home" title="Etec Philadelpho Gouvêa Netto">
+                        </a><a href="images/logo-cps.png" class="custom-logo-link" rel="home"><img width="492" height="140" src="images/lofoo.png" class="custom-logo" alt="Etec Philadelpho Gouvêa Netto" decoding="async" fetchpriority="high"></a>                    
+                </div>
+                </form>
+                <div id="search-mobile__btn" style="display:none;">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div id="menu-mobile__btn">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </header>
+    <div style="margin-left:auto;text-align:right">
+      <p style="margin:0;font-weight:700">2025</p>
+      <p style="margin:0;font-size:13px">Feito por Marcelo Davi</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div class="hero card">
+        <h2>Visão geral</h2>
+        <p class="muted">Esta página apresenta a história da Etec Philadelpho Gouvêa Netto, destacando suas fases históricas, os cursos oferecidos desde a fundação nos anos 1950 e os cursos atuais (2024 em diante). Inclui galeria de fotos e registro do incêndio ocorrido em 28 de março de 2011.</p>
+        <nav class="tabs" aria-label="Seções">
+          <button class="tab-btn active" data-target="timeline">Linha do Tempo</button>
+          <button class="tab-btn" data-target="cursos">Cursos Disciplinados</button>
+          <button class="tab-btn" data-target="galeria">Galeria e Incêndio</button>
+        </nav>
+      </div>
+
+      <aside class="meta">
+        <p><strong>Datas importantes</strong></p>
+        <p class="muted">Inscrições históricas: referência aos panfletos informativos; incêndio: 28/03/2011 por volta das 23:30; Fundação anterior a 1988 com 1ª fase desde 1956.</p>
+        
+      </aside>
+    </section>
+
+    <section id="timeline" class="section active">
+      <h2>Linha do Tempo</h2>
+
+      <!-- Slideshow (aparece somente quando esta seção tem .active) -->
+      <div class="slideshow" id="etec-slideshow" aria-hidden="false">
+        <div class="slides" id="slides">
+          <div class="slide"><img src="images/etec1.jpg" alt="Fachada da Etec Philadelpho Gouvêa Netto"></div>
+          <div class="slide"><img src="images/etec2.avif" alt="Registro do incêndio na Etec"></div>
+          <div class="slide"><img src="images/etec3.jpg" alt="Panfletos e cartaz institucional"></div>
+          <div class="slide"><img src="images/etec4.jpg" alt="Alunos em laboratório"></div>
+        <div class="slide"><img src="images/etec5.jpg" alt="Sala de aula com alunos"></div>
+        <div class="slide"><img src="images/etec6.jpg" alt="mada">                  </div>
+        </div>
+
+        <div class="controls" aria-hidden="true">
+          <button class="control-btn" id="prevBtn" aria-label="Anterior">&lt;</button>
+          <button class="control-btn" id="nextBtn" aria-label="Próximo">&gt;</button>
+        </div>
+
+        <div class="indicators" id="indicators" aria-hidden="true">
+          <!-- buttons gerados dinamicamente -->
+        </div>
+      </div>
+
+      <div class="timeline">
+        <article class="event">
+          <div class="year">1956–1963</div>
+          <div class="body">
+            <h3 class="muted">1ª Fase: Escola Artesanal de São José do Rio Preto</h3>
+            <p>A instituição começou suas atividades como a <strong>Escola Artesanal de São José do Rio Preto</strong>, formando profissionais com ênfase em ofícios e técnicas aplicadas à indústria e ao comércio local.</p>
+            <div class="card" style="margin-top:8px">
+              <strong>Cursos oferecidos na fundação (anos 50)</strong>
+              <div class="courses-grid" style="margin-top:8px">
+                <div>Marcenaria; Tornearia</div>
+                <div>Costura Industrial; Tecelagem</div>
+                <div>Eletricidade Básica; Reparos</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="year">1964–1987</div>
+          <div class="body">
+            <h3 class="muted">Expansão e integração técnica</h3>
+            <p>Ao longo das décadas a escola foi ampliando sua oferta técnica e adequando currículos às demandas regionais, consolidando-se como referência em formação técnica.</p>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="year">1988</div>
+          <div class="body">
+            <h3 class="muted">Nome e gestão atual</h3>
+            <p>A instituição passou a adotar o nome Etec Philadelpho Gouvêa Netto sob a gestão de órgãos estaduais de ensino técnico, fortalecendo parcerias com o Centro Paula Souza e ampliando cursos integrados ao Ensino Médio.</p>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="year">28 de março de 2011</div>
+          <div class="body">
+            <h3 class="muted">Incêndio na unidade</h3>
+            <p>Ocorrência de um incêndio significativo na unidade por volta das <strong>23:30</strong>, que causou danos internos e exigiu ações de recuperação estrutural, limpeza e reestruturação dos espaços afetados.</p>
+            <div style="margin-top:8px" class="card">
+              <strong>Impactos</strong>
+              <p class="muted">Danos em salas e mobiliário; recuperação posterior; mobilização da comunidade escolar.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="year">2012–2023</div>
+          <div class="body">
+            <h3 class="muted">Recuperação e modernização</h3>
+            <p>Período de reformas, atualização de laboratórios e retomada da oferta de cursos técnicos com ênfase em áreas tecnológicas e de saúde.</p>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="year">2024 em diante</div>
+          <div class="body">
+            <h3 class="muted">Oferta atual integrada</h3>
+            <p>A escola oferta cursos técnicos integrados ao Ensino Médio e seqüenciais na parte da tarde/noite e integral, com ênfase em saúde, tecnologia, construção e gestão.</p>
+            <div class="card" style="margin-top:8px">
+              <strong>Cursos atuais (exemplo a partir de 2024)</strong>
+              <div class="courses-grid" style="margin-top:8px">
+                <div>Administração (Tarde ou Noite)</div>
+                <div>Desenvolvimento de Sistemas (Integral ou Noite)</div>
+                <div>Edificações (Manhã ou Noite)</div>
+                <div>Eletrônica (Manhã)</div>
+                <div>Mecatrônica (Integral ou Noite)</div>
+                <div>Prótese Dentária (Manhã)</div>
+                <div>Enfermagem (Tarde ou Noite)</div>
+                <div>Finanças (Noite)</div>
+                <div>Mecânica (Noite)</div>
+                <div>Contabilidade (Noite)</div>
+                <div>Eletrotécnica (Noite)</div>
+                <div>Especialização em Prótese Ortodôntica (Noite)</div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="cursos" class="section">
+      <h2>Cursos Organizacionais</h2>
+
+      <div class="card">
+        <h3 class="muted">Cursos na fundação (anos 1950)</h3>
+        <p class="muted">Formação técnica artesanal orientada para ofícios práticos e reparos, voltada ao mercado local.</p>
+        <div class="courses-grid" style="margin-top:8px">
+          <div class="card"><strong>Marcenaria</strong></div>
+          <div class="card"><strong>Tornearia</strong></div>
+          <div class="card"><strong>Costura Industrial</strong></div>
+          <div class="card"><strong>Tecelagem</strong></div>
+          <div class="card"><strong>Eletricidade Básica</strong></div>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="card">
+        <h3 class="muted">Cursos técnicos atuais (2024 em diante)</h3>
+        <p class="muted">Listagem consolidada a partir do material promocional recente.</p>
+        <div class="courses-grid" style="margin-top:8px">
+          <div class="card"><strong>Administração</strong><div class="muted">Tarde ou Noite</div></div>
+          <div class="card"><strong>Desenvolvimento de Sistemas</strong><div class="muted">Integral ou Noite</div></div>
+          <div class="card"><strong>Edificações</strong><div class="muted">Manhã ou Noite</div></div>
+          <div class="card"><strong>Eletrônica</strong><div class="muted">Manhã</div></div>
+          <div class="card"><strong>Mecatrônica</strong><div class="muted">Integral ou Noite</div></div>
+          <div class="card"><strong>Prótese Dentária</strong><div class="muted">Manhã / Noite</div></div>
+          <div class="card"><strong>Enfermagem</strong><div class="muted">Tarde ou Noite</div></div>
+          <div class="card"><strong>Finanças</strong><div class="muted">Noite</div></div>
+          <div class="card"><strong>Mecânica</strong><div class="muted">Noite</div></div>
+          <div class="card"><strong>Contabilidade</strong><div class="muted">Noite</div></div>
+          <div class="card"><strong>Eletrotécnica</strong><div class="muted">Noite</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="galeria" class="section">
+      <h2>Galeria de Incêndio</h2>
+
+      <p class="muted">Abaixo há imagens do dano causado pelo incêndio.</p>
+
+      <div class="gallery">
+        <!-- Galeria com clique para ampliar -->
+        <figure>
+            <img src="images/fogo1.jpg" alt="Incêndio na Etec - imagem 1" class="gallery-img" tabindex="0">
+            <figcaption>Incêndio na Etec — imagem 1</figcaption>
+        </figure>
+        <figure>
+            <img src="images/fogo2.jpg" alt="Incêndio na Etec - imagem 2" class="gallery-img" tabindex="0">
+            <figcaption>Incêndio na Etec — imagem 2</figcaption>
+        </figure>
+        <figure>
+            <img src="images/fogo3.jpg" alt="Incêndio na Etec - imagem 3" class="gallery-img" tabindex="0">
+            <figcaption>Incêndio na Etec — imagem 3</figcaption>
+        </figure>
+        <figure>
+            <img src="images/fogo4.jpg" alt="Incêndio na Etec - imagem 4" class="gallery-img" tabindex="0">
+            <figcaption>Incêndio na Etec — imagem 4</figcaption>
+        </figure>
+        <figure>
+            <img src="images/fogo5.jpg" alt="Incêndio na Etec - imagem 5" class="gallery-img" tabindex="0">
+            <figcaption>Incêndio na Etec — imagem 5</figcaption>
+        </figure>
+
+        <!-- Modal para ampliar imagem -->
+        <div id="img-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;">
+            <span id="close-modal" style="position:absolute;top:24px;right:32px;font-size:32px;color:#fff;cursor:pointer;font-weight:700;">&times;</span>
+            <img id="modal-img" src="" alt="" style="max-width:90vw;max-height:80vh;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.18);background:#fff;">
+            <div id="modal-caption" style="color:#fff;text-align:center;margin-top:18px;font-size:18px"></div>
+        </div>
+        <script>
+            // Galeria: clique para ampliar
+            document.querySelectorAll('.gallery-img').forEach(img=>{
+                img.addEventListener('click',()=>{
+                    document.getElementById('modal-img').src = img.src;
+                    document.getElementById('modal-img').alt = img.alt;
+                    document.getElementById('modal-caption').textContent = img.nextElementSibling ? img.nextElementSibling.textContent : '';
+                    document.getElementById('img-modal').style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                });
+                img.addEventListener('keydown',e=>{
+                    if(e.key==='Enter'||e.key===' '){
+                        img.click();
+                    }
+                });
+            });
+            document.getElementById('close-modal').onclick = function(){
+                document.getElementById('img-modal').style.display = 'none';
+                document.body.style.overflow = '';
+            };
+            document.getElementById('img-modal').addEventListener('click',function(e){
+                if(e.target===this){
+                    this.style.display='none';
+                    document.body.style.overflow = '';
+                }
+            });
+            window.addEventListener('keydown',function(e){
+                if(document.getElementById('img-modal').style.display==='flex' && (e.key==='Escape')){
+                    document.getElementById('img-modal').style.display='none';
+                    document.body.style.overflow = '';
+                }
+            });
+        </script>
+        
+
+      <div style="margin-top:12px" class="card">
+        <strong>Registro do incêndio</strong>
+        <p class="muted">Data: 28 de março de 2011; Horário aproximado: 23:30;</p>
+      </div>
+    </section>
+    <div id="final-bar" style="width:100%;background:linear-gradient(90deg,#B20000,#7E0000);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:8px 18px;z-index:1000;box-shadow:0 -2px 12px rgba(0,0,0,0.10);font-size:14px;min-height:38px;position:static;margin-top:32px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span><strong>Etec Philadelpho Gouvêa Netto</strong> &copy; Todos os direitos reservados ao Centro Paula Souza</span>
+      </div>
+      <button onclick="window.open('https://www.cps.sp.gov.br','_blank')" style="background:#fff;color:#B20000;font-weight:700;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.07)">Site do CPS</button>
+    </div>
+    <footer>
+      <div><strong>Etec Philadelpho Gouvêa Netto</strong> — São José do Rio Preto</div>
+    </footer>
+  </main>
+
+  <script>
+    // Tab switching simples
+    document.querySelectorAll('.tab-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=> {
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        let target = btn.getAttribute('data-target');
+        document.querySelectorAll('.section').forEach(sec=>{
+          sec.classList.remove('active');
+        });
+        document.getElementById(target).classList.add('active');
+        // ao trocar de aba, garantir estado do slideshow: somente visível quando timeline está ativa
+        const slideshow = document.getElementById('etec-slideshow');
+        if(document.getElementById('timeline').classList.contains('active')){
+          slideshow.style.display = 'block';
+          slideshow.setAttribute('aria-hidden','false');
+        } else {
+          slideshow.style.display = 'none';
+          slideshow.setAttribute('aria-hidden','true');
+        }
+        window.scrollTo({top:0,behavior:'smooth'});
+      });
+    });
+
+    // Slideshow básico
+    (function(){
+      const slidesEl = document.getElementById('slides');
+      const slides = slidesEl.querySelectorAll('.slide');
+      const indicatorsEl = document.getElementById('indicators');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      let current = 0;
+      let autoPlayTimer = null;
+      const interval = 4500; // ms
+
+      // criar indicadores
+      slides.forEach((s, idx)=>{
+        const btn = document.createElement('button');
+        btn.setAttribute('aria-label','Ir para slide '+(idx+1));
+        btn.addEventListener('click', ()=> {
+          goTo(idx);
+          restartAuto();
+        });
+        indicatorsEl.appendChild(btn);
+      });
+
+      const indicators = Array.from(indicatorsEl.querySelectorAll('button'));
+
+      function update(){
+        slidesEl.style.transform = 'translateX(' + (-current * 100) + '%)';
+        indicators.forEach((b,i)=> b.classList.toggle('active', i===current));
+      }
+
+      function goTo(idx){
+        current = (idx + slides.length) % slides.length;
+        update();
+      }
+
+      prevBtn.addEventListener('click', ()=> { goTo(current-1); restartAuto(); });
+      nextBtn.addEventListener('click', ()=> { goTo(current+1); restartAuto(); });
+
+      // autoplay
+      function startAuto(){
+        if(autoPlayTimer) clearInterval(autoPlayTimer);
+        autoPlayTimer = setInterval(()=> { goTo(current+1); }, interval);
+      }
+      function stopAuto(){
+        if(autoPlayTimer) clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+      }
+      function restartAuto(){ stopAuto(); startAuto(); }
+
+      // iniciar
+      goTo(0);
+      startAuto();
+
+      // pausa ao focar controles (acessibilidade)
+      [prevBtn,nextBtn, ...indicators].forEach(el=>{
+        el.addEventListener('focus', stopAuto);
+        el.addEventListener('blur', startAuto);
+      });
+
+      // garantir que slideshow comece visível só se a seção timeline estiver ativa
+      const slideshow = document.getElementById('etec-slideshow');
+      if(!document.getElementById('timeline').classList.contains('active')){
+        slideshow.style.display = 'none';
+        slideshow.setAttribute('aria-hidden','true');
+      } else {
+        slideshow.style.display = 'block';
+        slideshow.setAttribute('aria-hidden','false');
+      }
+    })();
+  </script>
+</body>
+</html>
